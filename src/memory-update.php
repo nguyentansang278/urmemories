@@ -14,7 +14,7 @@ if ($result && mysqli_num_rows($result) > 0) {
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="imgs/heart-solid.svg" type="image/x-icon">
+    <link rel="shortcut icon" href="../imgs/heart-solid.svg" type="image/x-icon">
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -32,11 +32,11 @@ if ($result && mysqli_num_rows($result) > 0) {
             <div class="card">
                 <div class="card-header">
                     <h4>Memory Update
-                        <a href="display.php" class="btn btn-danger float-end">BACK</a>
+                        <a href="memories_display.php" class="btn btn-danger float-end">BACK</a>
                     </h4>
                 </div>
                 <div class="card-body">
-                    <form action="code.php" method="POST" enctype="application/x-www-form-urlencoded">
+                    <form action="handler.php" method="POST" enctype="application/x-www-form-urlencoded">
                         <div class="mb-3" style="display:none">
                             <label>Image file</label>
                             <input type="text" name="filename" class="form-control" value="<?= $record['filename']?>"  />

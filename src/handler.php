@@ -1,6 +1,9 @@
 <?php
 //session_start();
 require 'dbcon.php';
+$username=$_SESSION['username'];
+$storage_id = "storage/".$username;
+
 
 if(isset($_POST['delete_memory']))
 {
@@ -12,42 +15,49 @@ if(isset($_POST['delete_memory']))
     if($query_run)
     {
         $_SESSION['message'] = "Memory Deleted Successfully";
-        header("Location: display.php");
+        header("Location: memories_display.php");
         exit(0);
     }
     else
     {
         $_SESSION['message'] = "Memory Not Deleted";
-        header("Location: display.php");
+        header("Location: memories_display.php");
         exit(0);
     }
+    mysqli_close($con);
+
 }
 
 
 if(isset($_POST['save_memory']))
 {
 //    $filename = mysqli_real_escape_string($con, $_POST['filename']);
-    $filename = mysqli_real_escape_string($con, $_FILES['filename']['name']);
+    $filename = $username.mysqli_real_escape_string($con, $_FILES['filename']['name']);
     $note = mysqli_real_escape_string($con, $_POST['note']);
     $date = mysqli_real_escape_string($con, $_POST['date']);
 
-    $query = "INSERT INTO memory (filename, note, date) VALUES ('$filename','$note','$date')";
+    $query = "INSERT INTO memory (filename, note, date, storage_id) VALUES ('$filename','$note','$date', '$username')";
 
     $query_run = mysqli_query($con, $query);
     if($query_run)
     {
+        if (!file_exists($storage)) {
+            mkdir($storage, 0777, true);
+        }
         $_SESSION['message'] = "Memory Created Successfully";
-        move_uploaded_file($_FILES['filename']['tmp_name'], "storage/". $_FILES['filename']['name']);
-        header("Location: display.php");
+        move_uploaded_file($_FILES['filename']['tmp_name'], ($storage_id."/").$filename);
+        header("Location: memories_display.php");
         exit(0);
     }
     else
     {
         echo "image not found!";
         $_SESSION['message'] = "Memory Not Created";
-        header("Location: display.php");
+        header("Location: memories_display.php");
         exit(0);
     }
+    mysqli_close($con);
+
 }
 
 if(isset($_POST['update_memory']))
@@ -56,7 +66,7 @@ if(isset($_POST['update_memory']))
     $note = mysqli_real_escape_string($con, $_POST['note']);
     $date = mysqli_real_escape_string($con, $_POST['date']);
 
-    $query = "UPDATE memory SET note = '$note', date= '$date' WHERE filename = '$filename'";
+    $query = "UPDATE memory SET note = '$note', date= '$date' WHERE filename = '$filename' AND storage_id = '$username' ";
 
     if(mysqli_query($con, $query))
     {
@@ -70,9 +80,11 @@ if(isset($_POST['update_memory']))
 
         echo "image not found!";
         $_SESSION['message'] = "Memory Not Created";
-        header("Location: display.php");
+        header("Location: memories_display.php");
         exit(0);
     }
+    mysqli_close($con);
+
 
 }
 
@@ -86,14 +98,23 @@ if(isset($_POST['login_page'])) {
         if ($pwd == $record['password']) {
             $_SESSION["login"] = True;
             $_SESSION["username"] = $record['username'];
-            header("Location: display.php");
+            header("Location: memories_display.php");
         } else {
             header("Location: test.php?mess=0");
         }
     } else {
         header("Location: test.php?mess=2");
     }
+    mysqli_close($con);
 }
 
-
+if ($_GET["action"] == "logout") {
+    logout();
+}
+function logout(){
+    $_SESSION=[];
+    session_unset();
+    session_destroy();
+    header("Location:index.php");
+}
 ?>

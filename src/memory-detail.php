@@ -2,7 +2,7 @@
 //     session_start();
      require 'dbcon.php';
 
-     $query = "SELECT * FROM memory WHERE filename = '" .$_GET['filename']."'";
+     $query = "SELECT * FROM memory WHERE filename = '" .$_GET['filename']."' AND storage_id = '".$_SESSION["username"]."' ";
      $result = mysqli_query($con, $query);
      if ($result && mysqli_num_rows($result) > 0) {
           $record = mysqli_fetch_assoc($result);
@@ -13,7 +13,7 @@
 <!DOCTYPE html>
 <html lang="en">
      <head>
-         <link rel="shortcut icon" href="imgs/heart-solid.svg" type="image/x-icon">
+         <link rel="shortcut icon" href="../imgs/heart-solid.svg" type="image/x-icon">
 
          <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -105,14 +105,14 @@
      <body>
           <div class="container">
                <div class="left-side">
-                    <img src="storage/<?= $_SESSION['username']?>/<?= $record['filename']; ?>" alt="Your Image">
+                    <img src="../storage/<?= $record['storage_id'];?>/<?= $record['filename']; ?>" alt="Your Image">
                </div>
                <div class="right-side">
                    <pre>
                        <h1 class="date"><?= $record['date'];?></h1>
                        <p class="note"><?=$record['note'];?></p>
                    </pre>
-                   <div class="btn btn-close" id="btn-close-detail"><img src="imgs/xmark-solid.svg"></div>
+                   <div class="btn btn-close" id="btn-close-detail"><img src="../imgs/xmark-solid.svg"></div>
                    <div class="edit-close-btn">
                        <p><a href="memory-update.php?filename=<?= $record['filename']; ?>" class="btn btn-edit">Edit</a></p>
                        <p><a href="memory-create.php" class="btn btn-delete">Delete</a></p>
